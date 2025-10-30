@@ -20,7 +20,7 @@
             <artifactId>sablecc</artifactId>
             <version>3.7</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/home/guilherme/Documentos/materiasUFS/Compiladores/sablecc-3.7/lib/sablecc.jar</systemPath>
+            <systemPath>${project.basedir}/lib/sablecc.jar</systemPath>
         </dependency>
     </dependencies>
 
@@ -62,10 +62,13 @@
                                 <java jar="${project.basedir}/lib/sablecc.jar"
                                       fork="true"
                                       failonerror="true">
+
                                     <arg value="-d"/>
                                     <arg value="${project.build.directory}/generated-sources/sablecc"/>
                                     <arg value="${project.basedir}/src/main/resources/calculadora.sable"/>
                                 </java>
+                                <echo message="SableCC Output: ${sablecc.output}"/>
+                                <echo message="SableCC Error: ${sablecc.error}"/>
                             </target>
                         </configuration>
                     </execution>

@@ -1,17 +1,29 @@
-package org.example;
+package calculadora;
+import calculadora.lexer.*;
+import calculadora.node.*;
+import java.io.*;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-public class Main {
-    static void main() {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        IO.println(String.format("Hello and welcome!"));
+public class Main
+{
+	public static void main(String[] args)
+	{
+		try
+		{
+			String arquivo = "src/test/java/teste.calc";
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            IO.println("i = " + i);
-        }
-    }
+			Lexer lexer =
+					new Lexer(
+							new PushbackReader(  
+									new FileReader(arquivo), 1024)); 
+			Token token;
+			while(!((token = lexer.next()) instanceof EOF)) {
+				System.out.println(token.getClass());
+				System.out.println(" ( "+token.toString()+")");
+			}
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+		}
+	}
 }

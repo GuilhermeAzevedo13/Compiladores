@@ -1,0 +1,86 @@
+Package cordelmaisum;
+
+Helpers
+    qualquer = [0 .. 255];
+    any = [0 .. 9];
+    anyone = [11 .. 255];
+    digito = ['0' .. '9'];
+    maiuscula = ['A' .. 'Z'];
+    minuscula = ['a' .. 'z'];
+    underscore = '_';
+    espaco = ' ';
+    rc = 13;
+    nl = 10;
+
+
+
+
+Tokens
+    com = 'Com';
+    sua = 'sua';
+    licenca = 'licenca';
+    virgula = ',';
+    por = 'por';
+    aqui = 'aqui';
+    vamos = 'vamos';
+    comecar = 'comecar';
+    exclamacao = '!';
+    se_condicional = 'Se';
+    se = 'se';
+    senao = 'senao';
+    entao = 'entao';
+    uma = 'uma';
+    condicao = 'condicao';
+    assim = 'assim';
+    ja = 'ja';
+    ia = 'ia';
+    esquecendo = 'esquecendo';
+    ponto = '.';
+    tres_pontos = '...';
+    preste = 'preste';
+    atencao = 'atencao';
+    favor = 'favor';
+    dois_pontos = ':';
+    diz = 'diz';
+    ser = 'ser';
+    que = 'que';
+    tem = 'tem';
+    como = 'como';
+    valor = 'valor';
+    um = 'um';
+    funcao = 'funcao';
+    arruma = 'arruma';
+    em = 'em';
+    troca = 'troca';
+    de = 'de';
+    a_grande = 'A';
+    para = 'para';
+    ela = 'ela';
+    voce = 'voce';
+    arranjar = 'arranjar';
+    o = 'o';
+    ira = 'ira';
+    te = 'te';
+    retornar = 'retornar';
+    resposta = ('sim' | 'nao');
+    operador_aritmetico = ('+' | '*' | '-' | '/' | '%');
+    separador = '|';
+    operador_relacional = ('>=' | '<=' | '>' | '<' | '=');
+    operador_booleano = ('e' | 'ou');
+    numero_real = digito+ ',' digito+;
+    numero_inteiro = digito+;
+    tipo = ('um nada' | 'uma resposta' | 'um numero');
+    par_esq = '(';
+    par_dir = ')';
+    colch_esq = '[';
+    colch_dir = ']';
+    id = maiuscula (maiuscula | minuscula | underscore)*;
+    comments_bloco = '{' (qualquer)* '}';
+    comments_linha = '#' (any | anyone)* nl;
+    vazio = (espaco | rc | nl)+;
+
+
+Ignored Tokens
+    vazio,
+    comments_bloco,
+    comments_linha;

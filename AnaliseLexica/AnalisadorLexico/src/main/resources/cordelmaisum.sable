@@ -1,46 +1,41 @@
 Package cordelmaisum;
 
 Helpers
-    qualquer = [0 .. 255];
-    any = [0 .. 9];
-    anyone = [11 .. 255];
     digito = ['0' .. '9'];
-    maiuscula = ['A' .. 'Z'];
-    minuscula = ['a' .. 'z'];
+    letra_min = ['a' .. 'z'];
+    letra_mai = ['A' .. 'Z'];
     underscore = '_';
     espaco = ' ';
     rc = 13;
     nl = 10;
+    tab = 9;
 
-
-
+    tudo = [0 .. 0xFFFF];
+    eol_set = [rc + nl];
+    not_eol = [tudo - eol_set];
+    not_brace = [tudo - '}'];
 
 Tokens
     com = 'Com';
     sua = 'sua';
     licenca = 'licenca';
-    virgula = ',';
     por = 'por';
     aqui = 'aqui';
     vamos = 'vamos';
     comecar = 'comecar';
-    exclamacao = '!';
-    se_condicional = 'Se';
+    se_cond = 'Se';
     se = 'se';
     senao = 'senao';
     entao = 'entao';
     uma = 'uma';
     condicao = 'condicao';
     assim = 'assim';
-    ja = 'ja';
+    ja = 'Ja';
     ia = 'ia';
     esquecendo = 'esquecendo';
-    ponto = '.';
-    tres_pontos = '...';
     preste = 'preste';
     atencao = 'atencao';
     favor = 'favor';
-    dois_pontos = ':';
     diz = 'diz';
     ser = 'ser';
     que = 'que';
@@ -53,7 +48,7 @@ Tokens
     em = 'em';
     troca = 'troca';
     de = 'de';
-    a_grande = 'A';
+    a_artigo = 'A';
     para = 'para';
     ela = 'ela';
     voce = 'voce';
@@ -62,25 +57,170 @@ Tokens
     ira = 'ira';
     te = 'te';
     retornar = 'retornar';
-    resposta = ('sim' | 'nao');
-    operador_aritmetico = ('+' | '*' | '-' | '/' | '%');
-    separador = '|';
-    operador_relacional = ('>=' | '<=' | '>' | '<' | '=');
-    operador_booleano = ('e' | 'ou');
-    numero_real = digito+ ',' digito+;
-    numero_inteiro = digito+;
-    tipo = ('um nada' | 'uma resposta' | 'um numero');
+    nada = 'nada';
+    resposta = 'resposta';
+    numero_tipo = 'numero';
+    sim = 'sim';
+    nao = 'nao';
+    e_logico = 'e';
+    ou_logico = 'ou';
+
+    virgula = ',';
+    exclamacao = '!';
+    ponto = '.';
+    tres_pontos = '...';
+    dois_pontos = ':';
     par_esq = '(';
     par_dir = ')';
     colch_esq = '[';
     colch_dir = ']';
-    id = maiuscula (maiuscula | minuscula | underscore)*;
-    comments_bloco = '{' (qualquer)* '}';
-    comments_linha = '#' (any | anyone)* nl;
-    vazio = (espaco | rc | nl)+;
+    barra = '|';
 
+    mais = '+';
+    menos = '-';
+    mult = '*';
+    div = '/';
+    mod = '%';
+
+    maior_igual = '>=';
+    menor_igual = '<=';
+    maior = '>';
+    menor = '<';
+    igual = '=';
+
+    num_real = digito+ ',' digito+;
+    num_int = digito+;
+
+    id = letra_mai (letra_mai | letra_min | underscore)*;
+
+    comentario_linha = '#' not_eol* (rc | nl);
+    comentario_bloco = '{' not_brace* '}';
+
+    vazio = (espaco | rc | nl | tab)+;
 
 Ignored Tokens
     vazio,
-    comments_bloco,
-    comments_linha;
+    comentario_linha,
+    comentario_bloco;
+
+Productions
+
+    programa = declaracao_funcao*;
+
+    declaracao_funcao =
+        {padrao} marcador_entrada? a_artigo funcao id arruma tipo [p1]:ponto
+                 se_cond para [ela1]:ela parametros voce arranjar virgula o valor de exp_retorno
+                 secao_constantes?
+                 [ela2]:ela ira te retornar [p2]:ponto;
+
+    marcador_entrada = com sua licenca virgula por aqui vamos comecar exclamacao;
+
+    tipo =
+        {numero} um numero_tipo |
+        {resposta} uma resposta |
+        {nada} um nada;
+
+    parametros =
+        {vazio} um nada |
+        {lista} lista_parametros;
+
+    lista_parametros =
+        {unico} parametro |
+        {multiplo} parametro_multiplo;
+
+    parametro_multiplo =
+        {final} [esq]:parametro e_logico [dir]:parametro |
+        {recursivo} parametro virgula parametro_multiplo;
+
+    parametro =
+        {simples} tipo id |
+        {funcional} assinatura;
+
+    assinatura =
+        uma funcao id par_esq que arruma tipo em troca de params_assinatura par_dir;
+
+    params_assinatura =
+        {vazio} um nada |
+        {lista} lista_params_assinatura;
+
+    lista_params_assinatura =
+        {unico} tipo |
+        {multiplo} tipo_multiplo_assinatura;
+
+    tipo_multiplo_assinatura =
+        {final} [esq]:tipo e_logico [dir]:tipo |
+        {recursivo} tipo virgula tipo_multiplo_assinatura;
+
+    exp_retorno =
+        {expressao} exp |
+        {condicional} condicao_ternaria;
+
+    condicao_ternaria =
+        uma condicao assim dois_pontos se_ternario;
+
+    se_ternario =
+        se par_esq exp par_dir entao [true_exp]:exp senao [false_exp]:exp;
+
+    exp =
+        {ou} exp ou_logico termo_logico |
+        {termo} termo_logico;
+
+    termo_logico =
+        {e} termo_logico e_logico termo_relacional |
+        {termo} termo_relacional;
+
+    termo_relacional =
+        {igual}       termo_relacional igual termo_soma |
+        {menor}       termo_relacional menor termo_soma |
+        {maior}       termo_relacional maior termo_soma |
+        {menor_igual} termo_relacional menor_igual termo_soma |
+        {maior_igual} termo_relacional maior_igual termo_soma |
+        {termo}       termo_soma;
+
+    termo_soma =
+        {soma}  termo_soma mais termo_mult |
+        {subt}  termo_soma menos termo_mult |
+        {termo} termo_mult;
+
+    termo_mult =
+        {mult} termo_mult mult fator |
+        {div}  termo_mult div fator |
+        {mod}  termo_mult mod fator |
+        {fator} fator;
+
+    fator =
+        {menos_unario} menos fator |
+        {nao_logico}   nao fator |
+        {atomo}        atomo;
+
+    atomo =
+        {numero_int}  num_int |
+        {numero_real} num_real |
+        {booleano_sim} sim |
+        {booleano_nao} nao |
+        {id}          id |
+        {chamada}     chamada_funcao |
+        {parens}      par_esq exp par_dir |
+        {ternario}    se_ternario;
+
+    chamada_funcao = id colch_esq lista_argumentos colch_dir;
+
+    lista_argumentos =
+        {vazia} |
+        {elementos} exp resto_lista_argumentos*;
+
+    resto_lista_argumentos = barra exp;
+
+    secao_constantes =
+        ja ia esquecendo tres_pontos preste atencao virgula por favor dois_pontos dec_constantes;
+
+    dec_constantes =
+        {unica} dec_constante |
+        {multipla} dec_constante_multipla;
+
+    dec_constante_multipla =
+        {final} [esq]:dec_constante e_logico [dir]:dec_constante |
+        {recursivo} dec_constante virgula dec_constante_multipla;
+
+    dec_constante =
+        id diz ser tipo que tem exp como valor;

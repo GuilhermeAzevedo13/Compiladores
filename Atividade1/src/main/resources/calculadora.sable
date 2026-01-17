@@ -1,23 +1,253 @@
-Package calculadora;
+Package cordelmaisum;
 
 Helpers
- digito = ['0' .. '9'];
- espaco = ' ';
- rc = 13;
- nl = 10;
- 
-Tokens
- numero = digito+;
- soma = '+';
- menos = '-';
- mult = '*';
- div = '/';
- mod = '%';
- par_esq = '(';
- par_dir = ')';
- vazio = (espaco | rc | nl)+;
+    digito = ['0' .. '9'];
+    letra_min = ['a' .. 'z'];
+    letra_mai = ['A' .. 'Z'];
+    underscore = '_';
+    espaco = ' ';
+    rc = 13;
+    nl = 10;
+    tab = 9;
 
+    // 1. Defina o universo de caracteres PRIMEIRO
+    tudo = [0 .. 0xFFFF];
+
+    // 2. Agora faça a subtração usando o helper 'tudo'
+    // A sintaxe correta é [conjunto_maior - [elementos_a_remover]]
+    tudo_exceto_nl = [tudo - [rc + nl]];
+
+Tokens
+    // Palavras Reservadas (Keywords)
+    com = 'Com';
+    sua = 'sua';
+    licenca = 'licenca';
+    por = 'por';
+    aqui = 'aqui';
+    vamos = 'vamos';
+    comecar = 'comecar';
+    se_cond = 'Se';     // 'Se' maiúsculo do início da função
+    se = 'se';          // 'se' minúsculo do ternário/lógica
+    senao = 'senao';
+    entao = 'entao';
+    uma = 'uma';
+    condicao = 'condicao';
+    assim = 'assim';
+    ja = 'Ja';
+    ia = 'ia';
+    esquecendo = 'esquecendo';
+    preste = 'preste';
+    atencao = 'atencao';
+    favor = 'favor';
+    diz = 'diz';
+    ser = 'ser';
+    que = 'que';
+    tem = 'tem';
+    como = 'como';
+    valor = 'valor';
+    um = 'um';
+    funcao = 'funcao';
+    arruma = 'arruma';
+    em = 'em';
+    troca = 'troca';
+    de = 'de';
+    a_artigo = 'A';
+    para = 'para';
+    ela = 'ela';
+    voce = 'voce';
+    arranjar = 'arranjar';
+    o = 'o';
+    ira = 'ira';
+    te = 'te';
+    retornar = 'retornar';
+    nada = 'nada';
+    resposta = 'resposta';
+    numero_tipo = 'numero'; // Para diferenciar da palavra reservada no tipo
+    sim = 'sim';
+    nao = 'nao';
+    e_logico = 'e';
+    ou_logico = 'ou';
+
+    // Pontuação e Símbolos
+    virgula = ',';
+    exclamacao = '!';
+    ponto = '.';
+    tres_pontos = '...';
+    dois_pontos = ':';
+    par_esq = '(';
+    par_dir = ')';
+    colch_esq = '[';
+    colch_dir = ']';
+    barra = '|';
+
+    // Operadores Aritméticos
+    mais = '+';
+    menos = '-';
+    mult = '*';
+    div = '/';
+    mod = '%';
+
+    // Operadores Relacionais
+    maior_igual = '>=';
+    menor_igual = '<=';
+    maior = '>';
+    menor = '<';
+    igual = '=';
+
+    // Literais e Identificadores
+    // O PDF define reais com virgula (ex: 10,5).
+    // Como a virgula tambem é separador, o parser precisa ser esperto ou o lexer distinguir.
+    // Pelo PDF, "A parte decimal... separada por uma vírgula".
+    num_real = digito+ ',' digito+;
+    num_int = digito+;
+
+    id = letra_mai (letra_mai | letra_min | underscore)*;
+
+    // Comentários
+    comentario_linha = '#' [tudo_exceto_nl]* (rc | nl);
+    comentario_bloco = '{' [tudo]* '}';
+
+    vazio = (espaco | rc | nl | tab)+;
 
 Ignored Tokens
- vazio;
+    vazio,
+    comentario_linha,
+    comentario_bloco;
 
+Productions
+
+    // --- Estrutura Geral ---
+    programa = declaracao_funcao*;
+
+    declaracao_funcao =
+        {padrao} marcador_entrada? a_artigo funcao id arruma tipo ponto
+                 se_cond para ela parametros voce arranjar virgula o valor de exp_retorno
+                 secao_constantes?
+                 ela ira te retornar ponto;
+
+    marcador_entrada = com sua licenca virgula por aqui vamos comecar exclamacao;
+
+    // --- Tipos ---
+    tipo =
+        {numero} um numero_tipo |
+        {resposta} uma resposta |
+        {nada} um nada;
+
+    // --- Parâmetros ---
+    // Regra complexa do PDF: "parametro" OU "p1, p2 e p3"
+    parametros =
+        {vazio} um nada |
+        {lista} lista_parametros;
+
+    lista_parametros =
+        {unico} parametro |
+        {multiplo} parametro_multiplo;
+
+    // Estrutura auxiliar para forçar o "e" no final de listas > 1
+    parametro_multiplo =
+        {final} parametro e_logico parametro |
+        {recursivo} parametro virgula parametro_multiplo;
+
+    parametro =
+        {simples} tipo id |
+        {funcional} assinatura;
+
+    assinatura =
+        uma funcao id par_esq que arruma tipo em troca de params_assinatura par_dir;
+
+    params_assinatura =
+        {vazio} um nada |
+        {lista} lista_params_assinatura;
+
+    lista_params_assinatura =
+        {unico} tipo |
+        {multiplo} tipo_multiplo_assinatura;
+
+    tipo_multiplo_assinatura =
+        {final} tipo e_logico tipo |
+        {recursivo} tipo virgula tipo_multiplo_assinatura;
+
+    // --- Corpo e Retorno ---
+    exp_retorno =
+        {expressao} exp |
+        {condicional} condicao_ternaria;
+
+    condicao_ternaria =
+        uma condicao assim dois_pontos se_ternario;
+
+    se_ternario =
+        se par_esq exp par_dir entao [true_exp]:exp senao [false_exp]:exp;
+
+    // --- Expressões (Hierarquia para Precedência C) ---
+    // Nível 1: Lógica OU (Menor precedência)
+    exp =
+        {ou} exp ou_logico termo_logico |
+        {termo} termo_logico;
+
+    // Nível 2: Lógica E
+    termo_logico =
+        {e} termo_logico e_logico termo_relacional |
+        {termo} termo_relacional;
+
+    // Nível 3: Relacional (=, <, >, <=, >=)
+    termo_relacional =
+        {igual}       termo_relacional igual termo_soma |
+        {menor}       termo_relacional menor termo_soma |
+        {maior}       termo_relacional maior termo_soma |
+        {menor_igual} termo_relacional menor_igual termo_soma |
+        {maior_igual} termo_relacional maior_igual termo_soma |
+        {termo}       termo_soma;
+
+    // Nível 4: Aritmética Soma/Subtração (+, -)
+    termo_soma =
+        {soma}  termo_soma mais termo_mult |
+        {subt}  termo_soma menos termo_mult |
+        {termo} termo_mult;
+
+    // Nível 5: Aritmética Mult/Div/Mod (*, /, %)
+    termo_mult =
+        {mult} termo_mult mult fator |
+        {div}  termo_mult div fator |
+        {mod}  termo_mult mod fator |
+        {fator} fator;
+
+    // Nível 6: Unários (Sinais e NÃO lógico)
+    fator =
+        {menos_unario} menos fator |
+        {nao_logico}   nao fator |
+        {atomo}        atomo;
+
+    // Nível 7: Átomos (Parênteses, Literais, Chamadas)
+    atomo =
+        {numero_int}  num_int |
+        {numero_real} num_real |
+        {booleano_sim} sim |
+        {booleano_nao} nao | // 'nao' aqui é o valor booleano, não operador
+        {id}          id |
+        {chamada}     chamada_funcao |
+        {parens}      par_esq exp par_dir |
+        {ternario}    se_ternario; // Ternário aninhado pode ser um átomo
+
+    // --- Chamada de Função ---
+    chamada_funcao = id colch_esq lista_argumentos colch_dir;
+
+    lista_argumentos =
+        {vazia} | // Pode ser vazio ou lista separada por barras
+        {elementos} exp resto_lista_argumentos*;
+
+    resto_lista_argumentos = barra exp;
+
+    // --- Constantes ---
+    secao_constantes =
+        ja ia esquecendo tres_pontos preste atencao virgula por favor dois_pontos dec_constantes;
+
+    dec_constantes =
+        {unica} dec_constante |
+        {multipla} dec_constante_multipla;
+
+    dec_constante_multipla =
+        {final} dec_constante e_logico dec_constante |
+        {recursivo} dec_constante virgula dec_constante_multipla;
+
+    dec_constante =
+        id diz ser tipo que tem exp como valor;

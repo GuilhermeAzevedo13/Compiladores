@@ -1,0 +1,28 @@
+{
+  Arquivo: teste_completo.cmu
+  Testa constantes, booleanos, assinaturas, chamada de func e expressoes complexas
+}
+
+A funcao TesteCompleto arruma um numero.
+Se um numero X e um numero Y,
+para voce arranjar, o valor de 
+  X * Y + 10
+Ja ia esquecendo... preste atencao, por favor:
+  PI diz ser um numero que tem 3,14 como valor e
+  VERDADE diz ser uma resposta que tem sim como valor.
+ela ira te retornar.
+
+Com sua licenca, por aqui vamos comecar!
+A funcao Principal arruma uma resposta.
+Se, para ela,
+   um nada
+voce arranjar, o valor de
+   uma condicao assim:
+      se ( nao (1 > 2) ) entao sim senao nao
+ela ira te retornar.
+
+A funcao PassaFuncao arruma um numero.
+Se uma funcao F(que arruma um numero em troca de um numero),
+para voce arranjar, o valor de
+   F [ 10 ]
+ela ira te retornar.

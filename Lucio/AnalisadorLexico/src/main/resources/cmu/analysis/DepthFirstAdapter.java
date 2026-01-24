@@ -102,6 +102,10 @@ public class DepthFirstAdapter extends AnalysisAdapter
         {
             node.getSeCond().apply(this);
         }
+        if(node.getPe() != null)
+        {
+            node.getPe().apply(this);
+        }
         if(node.getParametros() != null)
         {
             node.getParametros().apply(this);
@@ -110,17 +114,17 @@ public class DepthFirstAdapter extends AnalysisAdapter
         {
             node.getV1().apply(this);
         }
-        if(node.getParaVoceArranjar() != null)
+        if(node.getConector() != null)
         {
-            node.getParaVoceArranjar().apply(this);
+            node.getConector().apply(this);
         }
         if(node.getV2() != null)
         {
             node.getV2().apply(this);
         }
-        if(node.getOValorDe() != null)
+        if(node.getConectorValor() != null)
         {
-            node.getOValorDe().apply(this);
+            node.getConectorValor().apply(this);
         }
         if(node.getExpRetorno() != null)
         {
@@ -139,6 +143,90 @@ public class DepthFirstAdapter extends AnalysisAdapter
             node.getP2().apply(this);
         }
         outADecFuncao(node);
+    }
+
+    public void inACompletoPvaProd(ACompletoPvaProd node)
+    {
+        defaultIn(node);
+    }
+
+    public void outACompletoPvaProd(ACompletoPvaProd node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseACompletoPvaProd(ACompletoPvaProd node)
+    {
+        inACompletoPvaProd(node);
+        if(node.getParaVoceArranjar() != null)
+        {
+            node.getParaVoceArranjar().apply(this);
+        }
+        outACompletoPvaProd(node);
+    }
+
+    public void inAParcialPvaProd(AParcialPvaProd node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAParcialPvaProd(AParcialPvaProd node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAParcialPvaProd(AParcialPvaProd node)
+    {
+        inAParcialPvaProd(node);
+        if(node.getVoceArranjar() != null)
+        {
+            node.getVoceArranjar().apply(this);
+        }
+        outAParcialPvaProd(node);
+    }
+
+    public void inAPadraoOValorProd(APadraoOValorProd node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAPadraoOValorProd(APadraoOValorProd node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAPadraoOValorProd(APadraoOValorProd node)
+    {
+        inAPadraoOValorProd(node);
+        if(node.getOValorDe() != null)
+        {
+            node.getOValorDe().apply(this);
+        }
+        outAPadraoOValorProd(node);
+    }
+
+    public void inAResultadoOValorProd(AResultadoOValorProd node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAResultadoOValorProd(AResultadoOValorProd node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAResultadoOValorProd(AResultadoOValorProd node)
+    {
+        inAResultadoOValorProd(node);
+        if(node.getOResultadoDe() != null)
+        {
+            node.getOResultadoDe().apply(this);
+        }
+        outAResultadoOValorProd(node);
     }
 
     public void inANumeroTipo(ANumeroTipo node)

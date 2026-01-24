@@ -1,226 +1,293 @@
-Package cordelmaisum;
+Package cmu;
 
 Helpers
     digito = ['0' .. '9'];
-    letra_min = ['a' .. 'z'];
-    letra_mai = ['A' .. 'Z'];
+    letra_maiuscula = ['A' .. 'Z'];
+    letra_minuscula = ['a' .. 'z'];
     underscore = '_';
+    letra = letra_maiuscula | letra_minuscula;
     espaco = ' ';
-    rc = 13;
-    nl = 10;
     tab = 9;
-
+    cr = 13;
+    lf = 10;
     tudo = [0 .. 0xFFFF];
-    eol_set = [rc + nl];
-    not_eol = [tudo - eol_set];
-    not_brace = [tudo - '}'];
 
 Tokens
-    com = 'Com';
-    sua = 'sua';
-    licenca = 'licenca';
-    por = 'por';
-    aqui = 'aqui';
-    vamos = 'vamos';
-    comecar = 'comecar';
-    se_cond = 'Se';
-    se = 'se';
-    senao = 'senao';
-    entao = 'entao';
-    uma = 'uma';
-    condicao = 'condicao';
-    assim = 'assim';
+    // Constantes (Highest Priority)
     ja = 'Ja';
     ia = 'ia';
     esquecendo = 'esquecendo';
+    tres_pontos = '...';
     preste = 'preste';
     atencao = 'atencao';
+    por = 'por';
     favor = 'favor';
-    diz = 'diz';
-    ser = 'ser';
-    que = 'que';
-    tem = 'tem';
-    como = 'como';
-    valor = 'valor';
-    um = 'um';
-    funcao = 'funcao';
+    diz_ser = 'diz ser';
+    que_tem = 'que tem';
+    como_valor = 'como valor';
+    e_conn = 'e';
+
+    com = 'Com';
+    a_funcao = 'A funcao';
     arruma = 'arruma';
-    em = 'em';
-    troca = 'troca';
-    de = 'de';
-    a_artigo = 'A';
-    para = 'para';
-    ela = 'ela';
-    voce = 'voce';
-    arranjar = 'arranjar';
-    o = 'o';
-    ira = 'ira';
-    te = 'te';
-    retornar = 'retornar';
-    nada = 'nada';
-    resposta = 'resposta';
-    numero_tipo = 'numero';
+    ponto = '.';
+    virgula = ',';
+    se_cond = 'Se';
+    para_voce_arranjar = 'para voce arranjar';
+    o_valor_de = 'o valor de';
+    ela_ira_te_retornar = 'ela ira te retornar';
+    marcador_inicio = 'Com sua licenca, por aqui vamos comecar!';
+    tipo_num = 'um numero';
+    tipo_bool = 'uma resposta';
+    tipo_nada = 'um nada';
+    se = 'se';
+    entao = 'entao';
+    senao = 'senao';
+    uma_funcao = 'uma funcao';
+    que_arruma = 'que arruma';
+    em_troca_de = 'em troca de';
     sim = 'sim';
     nao = 'nao';
-    e_logico = 'e';
-    ou_logico = 'ou';
-
-    virgula = ',';
-    exclamacao = '!';
-    ponto = '.';
-    tres_pontos = '...';
-    dois_pontos = ':';
-    par_esq = '(';
-    par_dir = ')';
-    colch_esq = '[';
-    colch_dir = ']';
-    barra = '|';
-
-    mais = '+';
-    menos = '-';
+    soma = '+';
+    sub = '-';
     mult = '*';
     div = '/';
     mod = '%';
-
     maior_igual = '>=';
     menor_igual = '<=';
     maior = '>';
     menor = '<';
     igual = '=';
-
-    num_real = digito+ ',' digito+;
+    ou = 'ou';
+    esq_par = '(';
+    dir_par = ')';
+    esq_col = '[';
+    dir_col = ']';
+    barra = '|';
+    dois_pontos = ':';
+    ponto_virgula = ';';
+    uma_condicao_assim = 'uma condicao assim:';
+    id = letra_maiuscula (letra | underscore)*;
     num_int = digito+;
-
-    id = letra_mai (letra_mai | letra_min | underscore)*;
-
-    comentario_linha = '#' not_eol* (rc | nl);
-    comentario_bloco = '{' not_brace* '}';
-
-    vazio = (espaco | rc | nl | tab)+;
+    num_real = digito+ ',' digito+;
+    comentario_linha = '#' [tudo - [cr + lf]]* (cr | lf | cr lf);
+    comentario_bloco = '{' [tudo - '}']* '}';
+    branco = (espaco | tab | cr | lf)+;
 
 Ignored Tokens
-    vazio,
-    comentario_linha,
-    comentario_bloco;
+    branco, comentario_linha, comentario_bloco;
 
 Productions
 
-    programa = declaracao_funcao*;
+    programa =
+        {lista} dec_funcao+;
 
-    declaracao_funcao =
-        {padrao} marcador_entrada? a_artigo funcao id arruma tipo [p1]:ponto
-                 se_cond para [ela1]:ela parametros voce arranjar virgula o valor de exp_retorno
-                 secao_constantes?
-                 [ela2]:ela ira te retornar [p2]:ponto;
-
-    marcador_entrada = com sua licenca virgula por aqui vamos comecar exclamacao;
+    dec_funcao =
+        [marcador]:marcador_inicio?
+        a_funcao id arruma tipo [p1]:ponto
+        se_cond parametros [v1]:virgula
+        para_voce_arranjar [v2]:virgula
+        o_valor_de exp_retorno
+        secao_constantes?
+        ela_ira_te_retornar [p2]:ponto;
 
     tipo =
-        {numero} um numero_tipo |
-        {resposta} uma resposta |
-        {nada} um nada;
+        {numero} tipo_num |
+        {resposta} tipo_bool |
+        {nada} tipo_nada;
 
     parametros =
-        {vazio} um nada |
-        {lista} lista_parametros;
-
-    lista_parametros =
-        {unico} parametro |
-        {multiplo} parametro_multiplo;
+        {unico} param_geral |
+        {lista} parametro_multiplo;
 
     parametro_multiplo =
-        {final} [esq]:parametro e_logico [dir]:parametro |
-        {recursivo} parametro virgula parametro_multiplo;
+        {duplo} [p1]:param_geral e_conn [p2]:param_geral |
+        {triplo_ou_mais} [p1]:param_geral virgula_parametro_lista e_conn [p2]:param_geral;
 
-    parametro =
-        {simples} tipo id |
-        {funcional} assinatura;
+    virgula_parametro_lista =
+        {unico} virgula param_geral |
+        {recursivo} virgula_parametro_lista virgula param_geral;
+
+    param_geral =
+        {declaracao} tipo [nome]:id? |
+        {assinatura} assinatura;
 
     assinatura =
-        uma funcao id par_esq que arruma tipo em troca de params_assinatura par_dir;
+        uma_funcao id esq_par que_arruma tipo em_troca_de parametros_assinatura dir_par;
 
-    params_assinatura =
-        {vazio} um nada |
-        {lista} lista_params_assinatura;
+    parametros_assinatura =
+        {unico} param_geral |
+        {lista} parametro_assinatura_multiplo;
 
-    lista_params_assinatura =
-        {unico} tipo |
-        {multiplo} tipo_multiplo_assinatura;
+    parametro_assinatura_multiplo =
+        {duplo} [p1]:param_geral e_conn [p2]:param_geral |
+        {triplo_ou_mais} [p1]:param_geral virgula_pa_lista e_conn [p2]:param_geral;
 
-    tipo_multiplo_assinatura =
-        {final} [esq]:tipo e_logico [dir]:tipo |
-        {recursivo} tipo virgula tipo_multiplo_assinatura;
+    virgula_pa_lista =
+        {unico} virgula param_geral |
+        {recursivo} virgula_pa_lista virgula param_geral;
 
     exp_retorno =
-        {expressao} exp |
-        {condicional} condicao_ternaria;
+        {padrao} exp |
+        {condicao_ternaria} condicao_ternaria;
 
     condicao_ternaria =
-        uma condicao assim dois_pontos se_ternario;
-
-    se_ternario =
-        se par_esq exp par_dir entao [true_exp]:exp senao [false_exp]:exp;
+        uma_condicao_assim se_ternario;
 
     exp =
-        {ou} exp ou_logico termo_logico |
-        {termo} termo_logico;
+        {ternario} se_ternario |
+        {disjuncao} exp_disjuncao;
 
-    termo_logico =
-        {e} termo_logico e_logico termo_relacional |
-        {termo} termo_relacional;
+    se_ternario =
+        se esq_par [cond]:exp dir_par entao [verd]:exp senao [falso]:exp;
 
-    termo_relacional =
-        {igual}       termo_relacional igual termo_soma |
-        {menor}       termo_relacional menor termo_soma |
-        {maior}       termo_relacional maior termo_soma |
-        {menor_igual} termo_relacional menor_igual termo_soma |
-        {maior_igual} termo_relacional maior_igual termo_soma |
-        {termo}       termo_soma;
+    exp_disjuncao =
+        {ou} exp_disjuncao ou exp_conjuncao |
+        {conjuncao} exp_conjuncao;
 
-    termo_soma =
-        {soma}  termo_soma mais termo_mult |
-        {subt}  termo_soma menos termo_mult |
-        {termo} termo_mult;
+    exp_conjuncao =
+        {e} exp_conjuncao e_conn exp_relacional |
+        {relacional} exp_relacional;
 
-    termo_mult =
-        {mult} termo_mult mult fator |
-        {div}  termo_mult div fator |
-        {mod}  termo_mult mod fator |
-        {fator} fator;
+    exp_relacional =
+        {igual} exp_relacional igual exp_aritmetica |
+        {maior} exp_relacional maior exp_aritmetica |
+        {menor} exp_relacional menor exp_aritmetica |
+        {maior_igual} exp_relacional maior_igual exp_aritmetica |
+        {menor_igual} exp_relacional menor_igual exp_aritmetica |
+        {aritmetica} exp_aritmetica;
 
-    fator =
-        {menos_unario} menos fator |
-        {nao_logico}   nao fator |
-        {atomo}        atomo;
+    exp_aritmetica =
+        {soma} exp_aritmetica soma exp_fator |
+        {sub} exp_aritmetica sub exp_fator |
+        {fator} exp_fator;
 
-    atomo =
-        {numero_int}  num_int |
-        {numero_real} num_real |
-        {booleano_sim} sim |
-        {booleano_nao} nao |
-        {id}          id |
-        {chamada}     chamada_funcao |
-        {parens}      par_esq exp par_dir |
-        {ternario}    se_ternario;
+    exp_fator =
+        {mult} exp_fator mult exp_unario |
+        {div} exp_fator div exp_unario |
+        {mod} exp_fator mod exp_unario |
+        {unario} exp_unario;
 
-    chamada_funcao = id colch_esq lista_argumentos colch_dir;
+    exp_unario =
+        {menos} sub exp_unario |
+        {nao} nao esq_par exp dir_par |
+        {base} exp_base;
 
-    lista_argumentos =
-        {vazia} |
-        {elementos} exp resto_lista_argumentos*;
+    exp_base =
+        {int} num_int |
+        {real} num_real |
+        {sim} sim |
+        {nao_val} nao |
+        {id} id |
+        {chamada} chamada |
+        {par} esq_par exp dir_par;
 
-    resto_lista_argumentos = barra exp;
+    chamada = id esq_col lista_exp dir_col;
+
+    lista_exp =
+        {vazio} |
+        {elementos} lista_exp_elems;
+
+    lista_exp_elems =
+        {unico} exp |
+        {varios} lista_exp_elems barra exp;
 
     secao_constantes =
-        ja ia esquecendo tres_pontos preste atencao virgula por favor dois_pontos dec_constantes;
+        ja ia esquecendo tres_pontos preste atencao virgula por favor dois_pontos dec_constantes ponto
+        {-> New secao_constantes(dec_constantes)};
 
     dec_constantes =
-        {unica} dec_constante |
-        {multipla} dec_constante_multipla;
+        {unico} dec_constante |
+        {duplo} [d1]:dec_constante e_conn [d2]:dec_constante |
+        {triplo_ou_mais} [d1]:dec_constante virgula_const_lista e_conn [d2]:dec_constante;
 
-    dec_constante_multipla =
-        {final} [esq]:dec_constante e_logico [dir]:dec_constante |
-        {recursivo} dec_constante virgula dec_constante_multipla;
+    virgula_const_lista =
+        {unico} virgula dec_constante |
+        {recursivo} virgula_const_lista virgula dec_constante;
 
     dec_constante =
-        id diz ser tipo que tem exp como valor;
+        id diz_ser tipo que_tem exp como_valor;
+
+Abstract Syntax Tree
+
+    programa = {lista} dec_funcao+;
+
+    dec_funcao = [marcador]:marcador_inicio? a_funcao id arruma tipo [p1]:ponto se_cond parametros [v1]:virgula para_voce_arranjar [v2]:virgula o_valor_de exp_retorno secao_constantes? ela_ira_te_retornar [p2]:ponto;
+
+    tipo = {numero} tipo_num | {resposta} tipo_bool | {nada} tipo_nada;
+    parametros =
+        {unico} param_geral |
+        {lista} parametro_multiplo;
+
+    param_geral = {declaracao} tipo [nome]:id? | {assinatura} assinatura;
+
+    parametro_multiplo =
+        {duplo} [p1]:param_geral e_conn [p2]:param_geral |
+        {triplo_ou_mais} [p1]:param_geral virgula_parametro_lista e_conn [p2]:param_geral;
+
+    virgula_parametro_lista = {unico} virgula param_geral | {recursivo} virgula_parametro_lista virgula param_geral;
+
+    assinatura = uma_funcao id esq_par que_arruma tipo em_troca_de parametros_assinatura dir_par;
+
+    parametros_assinatura =
+        {unico} param_geral |
+        {lista} parametro_assinatura_multiplo;
+
+    parametro_assinatura_multiplo =
+        {duplo} [p1]:param_geral e_conn [p2]:param_geral |
+        {triplo_ou_mais} [p1]:param_geral virgula_pa_lista e_conn [p2]:param_geral;
+    virgula_pa_lista = {unico} virgula param_geral | {recursivo} virgula_pa_lista virgula param_geral;
+
+    exp_retorno = {padrao} exp | {condicao_ternaria} condicao_ternaria;
+    condicao_ternaria = uma_condicao_assim se_ternario;
+
+    exp = {ternario} se_ternario | {disjuncao} exp_disjuncao;
+    se_ternario = se esq_par [cond]:exp dir_par entao [verd]:exp senao [falso]:exp;
+
+    exp_disjuncao = {ou} exp_disjuncao ou exp_conjuncao | {conjuncao} exp_conjuncao;
+    exp_conjuncao = {e} exp_conjuncao e_conn exp_relacional | {relacional} exp_relacional;
+
+    exp_relacional =
+        {igual} exp_relacional igual exp_aritmetica |
+        {maior} exp_relacional maior exp_aritmetica |
+        {menor} exp_relacional menor exp_aritmetica |
+        {maior_igual} exp_relacional maior_igual exp_aritmetica |
+        {menor_igual} exp_relacional menor_igual exp_aritmetica |
+        {aritmetica} exp_aritmetica;
+
+    exp_aritmetica =
+        {soma} exp_aritmetica soma exp_fator |
+        {sub} exp_aritmetica sub exp_fator |
+        {fator} exp_fator;
+
+    exp_fator =
+        {mult} exp_fator mult exp_unario |
+        {div} exp_fator div exp_unario |
+        {mod} exp_fator mod exp_unario |
+        {unario} exp_unario;
+
+    exp_unario =
+        {menos} sub exp_unario |
+        {nao} nao esq_par exp dir_par |
+        {base} exp_base;
+
+    exp_base =
+        {int} num_int |
+        {real} num_real |
+        {sim} sim |
+        {nao_val} nao |
+        {id} id |
+        {chamada} chamada |
+        {par} esq_par exp dir_par;
+
+    chamada = id esq_col lista_exp dir_col;
+    lista_exp = {vazio} | {elementos} lista_exp_elems;
+    lista_exp_elems = {unico} exp | {varios} lista_exp_elems barra exp;
+
+    secao_constantes = dec_constantes;
+    dec_constantes =
+        {unico} dec_constante |
+        {duplo} [d1]:dec_constante e_conn [d2]:dec_constante |
+        {triplo_ou_mais} [d1]:dec_constante virgula_const_lista e_conn [d2]:dec_constante;
+    virgula_const_lista = {unico} virgula dec_constante | {recursivo} virgula_const_lista virgula dec_constante;
+    dec_constante = id diz_ser tipo que_tem exp como_valor;

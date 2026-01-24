@@ -14,11 +14,12 @@ public final class ADecFuncao extends PDecFuncao
     private PTipo _tipo_;
     private TPonto _p1_;
     private TSeCond _seCond_;
+    private TParaEla _pe_;
     private PParametros _parametros_;
     private TVirgula _v1_;
-    private TParaVoceArranjar _paraVoceArranjar_;
+    private PPvaProd _conector_;
     private TVirgula _v2_;
-    private TOValorDe _oValorDe_;
+    private POValorProd _conectorValor_;
     private PExpRetorno _expRetorno_;
     private PSecaoConstantes _secaoConstantes_;
     private TElaIraTeRetornar _elaIraTeRetornar_;
@@ -37,11 +38,12 @@ public final class ADecFuncao extends PDecFuncao
         @SuppressWarnings("hiding") PTipo _tipo_,
         @SuppressWarnings("hiding") TPonto _p1_,
         @SuppressWarnings("hiding") TSeCond _seCond_,
+        @SuppressWarnings("hiding") TParaEla _pe_,
         @SuppressWarnings("hiding") PParametros _parametros_,
         @SuppressWarnings("hiding") TVirgula _v1_,
-        @SuppressWarnings("hiding") TParaVoceArranjar _paraVoceArranjar_,
+        @SuppressWarnings("hiding") PPvaProd _conector_,
         @SuppressWarnings("hiding") TVirgula _v2_,
-        @SuppressWarnings("hiding") TOValorDe _oValorDe_,
+        @SuppressWarnings("hiding") POValorProd _conectorValor_,
         @SuppressWarnings("hiding") PExpRetorno _expRetorno_,
         @SuppressWarnings("hiding") PSecaoConstantes _secaoConstantes_,
         @SuppressWarnings("hiding") TElaIraTeRetornar _elaIraTeRetornar_,
@@ -62,15 +64,17 @@ public final class ADecFuncao extends PDecFuncao
 
         setSeCond(_seCond_);
 
+        setPe(_pe_);
+
         setParametros(_parametros_);
 
         setV1(_v1_);
 
-        setParaVoceArranjar(_paraVoceArranjar_);
+        setConector(_conector_);
 
         setV2(_v2_);
 
-        setOValorDe(_oValorDe_);
+        setConectorValor(_conectorValor_);
 
         setExpRetorno(_expRetorno_);
 
@@ -93,11 +97,12 @@ public final class ADecFuncao extends PDecFuncao
             cloneNode(this._tipo_),
             cloneNode(this._p1_),
             cloneNode(this._seCond_),
+            cloneNode(this._pe_),
             cloneNode(this._parametros_),
             cloneNode(this._v1_),
-            cloneNode(this._paraVoceArranjar_),
+            cloneNode(this._conector_),
             cloneNode(this._v2_),
-            cloneNode(this._oValorDe_),
+            cloneNode(this._conectorValor_),
             cloneNode(this._expRetorno_),
             cloneNode(this._secaoConstantes_),
             cloneNode(this._elaIraTeRetornar_),
@@ -285,6 +290,31 @@ public final class ADecFuncao extends PDecFuncao
         this._seCond_ = node;
     }
 
+    public TParaEla getPe()
+    {
+        return this._pe_;
+    }
+
+    public void setPe(TParaEla node)
+    {
+        if(this._pe_ != null)
+        {
+            this._pe_.parent(null);
+        }
+
+        if(node != null)
+        {
+            if(node.parent() != null)
+            {
+                node.parent().removeChild(node);
+            }
+
+            node.parent(this);
+        }
+
+        this._pe_ = node;
+    }
+
     public PParametros getParametros()
     {
         return this._parametros_;
@@ -335,16 +365,16 @@ public final class ADecFuncao extends PDecFuncao
         this._v1_ = node;
     }
 
-    public TParaVoceArranjar getParaVoceArranjar()
+    public PPvaProd getConector()
     {
-        return this._paraVoceArranjar_;
+        return this._conector_;
     }
 
-    public void setParaVoceArranjar(TParaVoceArranjar node)
+    public void setConector(PPvaProd node)
     {
-        if(this._paraVoceArranjar_ != null)
+        if(this._conector_ != null)
         {
-            this._paraVoceArranjar_.parent(null);
+            this._conector_.parent(null);
         }
 
         if(node != null)
@@ -357,7 +387,7 @@ public final class ADecFuncao extends PDecFuncao
             node.parent(this);
         }
 
-        this._paraVoceArranjar_ = node;
+        this._conector_ = node;
     }
 
     public TVirgula getV2()
@@ -385,16 +415,16 @@ public final class ADecFuncao extends PDecFuncao
         this._v2_ = node;
     }
 
-    public TOValorDe getOValorDe()
+    public POValorProd getConectorValor()
     {
-        return this._oValorDe_;
+        return this._conectorValor_;
     }
 
-    public void setOValorDe(TOValorDe node)
+    public void setConectorValor(POValorProd node)
     {
-        if(this._oValorDe_ != null)
+        if(this._conectorValor_ != null)
         {
-            this._oValorDe_.parent(null);
+            this._conectorValor_.parent(null);
         }
 
         if(node != null)
@@ -407,7 +437,7 @@ public final class ADecFuncao extends PDecFuncao
             node.parent(this);
         }
 
-        this._oValorDe_ = node;
+        this._conectorValor_ = node;
     }
 
     public PExpRetorno getExpRetorno()
@@ -521,11 +551,12 @@ public final class ADecFuncao extends PDecFuncao
             + toString(this._tipo_)
             + toString(this._p1_)
             + toString(this._seCond_)
+            + toString(this._pe_)
             + toString(this._parametros_)
             + toString(this._v1_)
-            + toString(this._paraVoceArranjar_)
+            + toString(this._conector_)
             + toString(this._v2_)
-            + toString(this._oValorDe_)
+            + toString(this._conectorValor_)
             + toString(this._expRetorno_)
             + toString(this._secaoConstantes_)
             + toString(this._elaIraTeRetornar_)
@@ -578,6 +609,12 @@ public final class ADecFuncao extends PDecFuncao
             return;
         }
 
+        if(this._pe_ == child)
+        {
+            this._pe_ = null;
+            return;
+        }
+
         if(this._parametros_ == child)
         {
             this._parametros_ = null;
@@ -590,9 +627,9 @@ public final class ADecFuncao extends PDecFuncao
             return;
         }
 
-        if(this._paraVoceArranjar_ == child)
+        if(this._conector_ == child)
         {
-            this._paraVoceArranjar_ = null;
+            this._conector_ = null;
             return;
         }
 
@@ -602,9 +639,9 @@ public final class ADecFuncao extends PDecFuncao
             return;
         }
 
-        if(this._oValorDe_ == child)
+        if(this._conectorValor_ == child)
         {
-            this._oValorDe_ = null;
+            this._conectorValor_ = null;
             return;
         }
 
@@ -681,6 +718,12 @@ public final class ADecFuncao extends PDecFuncao
             return;
         }
 
+        if(this._pe_ == oldChild)
+        {
+            setPe((TParaEla) newChild);
+            return;
+        }
+
         if(this._parametros_ == oldChild)
         {
             setParametros((PParametros) newChild);
@@ -693,9 +736,9 @@ public final class ADecFuncao extends PDecFuncao
             return;
         }
 
-        if(this._paraVoceArranjar_ == oldChild)
+        if(this._conector_ == oldChild)
         {
-            setParaVoceArranjar((TParaVoceArranjar) newChild);
+            setConector((PPvaProd) newChild);
             return;
         }
 
@@ -705,9 +748,9 @@ public final class ADecFuncao extends PDecFuncao
             return;
         }
 
-        if(this._oValorDe_ == oldChild)
+        if(this._conectorValor_ == oldChild)
         {
-            setOValorDe((TOValorDe) newChild);
+            setConectorValor((POValorProd) newChild);
             return;
         }
 

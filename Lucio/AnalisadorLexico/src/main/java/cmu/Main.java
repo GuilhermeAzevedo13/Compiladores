@@ -11,7 +11,7 @@ import java.io.File;
 public class Main {
 
     public static void main(String[] args) {
-        String arquivo = "teste_simples.cmu";
+        String arquivo = args.length > 0 ? args[0] : "triangulo_existencia.cmu";
 
         System.out.println("Working Directory = " + System.getProperty("user.dir"));
         File f = new File(arquivo);

@@ -14,6 +14,10 @@ public interface Analysis extends Switch
     void caseStart(Start node);
     void caseAListaPrograma(AListaPrograma node);
     void caseADecFuncao(ADecFuncao node);
+    void caseACompletoPvaProd(ACompletoPvaProd node);
+    void caseAParcialPvaProd(AParcialPvaProd node);
+    void caseAPadraoOValorProd(APadraoOValorProd node);
+    void caseAResultadoOValorProd(AResultadoOValorProd node);
     void caseANumeroTipo(ANumeroTipo node);
     void caseARespostaTipo(ARespostaTipo node);
     void caseANadaTipo(ANadaTipo node);
@@ -96,8 +100,11 @@ public interface Analysis extends Switch
     void caseTPonto(TPonto node);
     void caseTVirgula(TVirgula node);
     void caseTSeCond(TSeCond node);
+    void caseTParaEla(TParaEla node);
     void caseTParaVoceArranjar(TParaVoceArranjar node);
+    void caseTVoceArranjar(TVoceArranjar node);
     void caseTOValorDe(TOValorDe node);
+    void caseTOResultadoDe(TOResultadoDe node);
     void caseTElaIraTeRetornar(TElaIraTeRetornar node);
     void caseTMarcadorInicio(TMarcadorInicio node);
     void caseTTipoNum(TTipoNum node);

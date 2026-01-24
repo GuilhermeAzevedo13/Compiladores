@@ -1,0 +1,16 @@
+A funcao Fibonacci arruma um numero.
+Se, para ela, 
+   um numero N 
+voce arranjar, o valor de uma condicao assim:
+     se (N=0) entao 0
+     senao se (N=1) entao 1
+     senao Fibonacci[N-1] + Fibonacci[N-2]
+ela ira te retornar.
+
+Com sua licenca, por aqui vamos comecar!
+A funcao Principal arruma um numero. 
+Se, para ela, 
+   um nada, 
+voce arranjar, o valor de 
+   Fibonacci[200]
+ela ira te retornar.

@@ -87,6 +87,30 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseACompletoPvaProd(ACompletoPvaProd node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAParcialPvaProd(AParcialPvaProd node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAPadraoOValorProd(APadraoOValorProd node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAResultadoOValorProd(AResultadoOValorProd node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseANumeroTipo(ANumeroTipo node)
     {
         defaultCase(node);
@@ -573,13 +597,31 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseTParaEla(TParaEla node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseTParaVoceArranjar(TParaVoceArranjar node)
     {
         defaultCase(node);
     }
 
     @Override
+    public void caseTVoceArranjar(TVoceArranjar node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseTOValorDe(TOValorDe node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTOResultadoDe(TOResultadoDe node)
     {
         defaultCase(node);
     }

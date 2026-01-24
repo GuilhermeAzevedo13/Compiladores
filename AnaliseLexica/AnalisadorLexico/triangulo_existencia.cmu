@@ -1,46 +1,30 @@
-{
-  Arquivo: triangulo.cmu
-  Este codigo implementa a logica de existencia de um triangulo
-  e testa alguns operadores e a secao de constantes.
-}
+# Arquivo: triangulo_existencia.cmu
+# Este codigo implementa a logica de existencia de um triangulo
+# e testa operadores + secao de constantes.
 
 # Funcao principal da logica: checar o triangulo
-# Usa os operadores 'e' e '>'
 A funcao ExisteTriangulo arruma uma resposta.
-Se, para ela,
-   um numero LadoA,
-   um numero LadoB e
-   um numero LadoC
-voce arranjar, o valor de uma condicao assim:
-  # A soma de dois lados deve ser sempre maior que o terceiro
+Se um numero LadoA, um numero LadoB e um numero LadoC,
+para voce arranjar, o valor de uma condicao assim:
   se ( (LadoA + LadoB > LadoC) e (LadoA + LadoC > LadoB) e (LadoB + LadoC > LadoA) ) entao sim
   senao nao
 ela ira te retornar.
 
 # Funcao simples para testar outros operadores: *, % e <
-# (O operador / pode ser complicado por causa da divisao por zero,
-#  e o % ja testa a mesma classe de precedencia)
 A funcao TesteOperadores arruma um numero.
-Se, para ela,
-   um numero A e
-   um numero B
-voce arranjar, o valor de
-    se (A < B) entao (A * 10) senao (B % 3)
+Se um numero A e um numero B,
+para voce arranjar, o valor de
+  se (A < B) entao (A * 10) senao (B % 3)
 ela ira te retornar.
-
 
 # --- Ponto de Entrada ---
-
 Com sua licenca, por aqui vamos comecar!
 A funcao Principal arruma uma resposta.
-Se, para ela,
-   um nada,
-voce arranjar, o valor de
-   ExisteTriangulo[ LadoUm | LadoDois | LadoTres ] # Deve retornar 'sim'
+Se um nada,
+para voce arranjar, o valor de ExisteTriangulo[ LadoUm | LadoDois | LadoTres ]
 ela ira te retornar.
 
-# Define os valores dos lados para o teste.
-# Usa a secao de constantes e numeros reais (NUMERAL_REAL).
+# Define os valores dos lados para o teste (secao de constantes)
 Ja ia esquecendo... preste atencao, por favor:
 LadoUm diz ser um numero que tem 10,5 como valor,
 LadoDois diz ser um numero que tem 20,0 como valor e

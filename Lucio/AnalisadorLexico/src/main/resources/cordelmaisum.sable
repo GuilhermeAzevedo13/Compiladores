@@ -13,7 +13,6 @@ Helpers
     tudo = [0 .. 0xFFFF];
 
 Tokens
-    // Constantes (Highest Priority)
     ja = 'Ja';
     ia = 'ia';
     esquecendo = 'esquecendo';
@@ -33,8 +32,11 @@ Tokens
     ponto = '.';
     virgula = ',';
     se_cond = 'Se';
+    para_ela = ', para ela,';
     para_voce_arranjar = 'para voce arranjar';
+    voce_arranjar = 'voce arranjar';
     o_valor_de = 'o valor de';
+    o_resultado_de = 'o resultado de';
     ela_ira_te_retornar = 'ela ira te retornar';
     marcador_inicio = 'Com sua licenca, por aqui vamos comecar!';
     tipo_num = 'um numero';
@@ -85,9 +87,9 @@ Productions
     dec_funcao =
         [marcador]:marcador_inicio?
         a_funcao id arruma tipo [p1]:ponto
-        se_cond parametros [v1]:virgula 
-        para_voce_arranjar [v2]:virgula 
-        o_valor_de exp_retorno
+        se_cond [pe]:para_ela? parametros [v1]:virgula? 
+        [conector]:pva_prod [v2]:virgula 
+        [conector_valor]:o_valor_prod exp_retorno
         secao_constantes?
         ela_ira_te_retornar [p2]:ponto;
 
@@ -95,6 +97,14 @@ Productions
         {numero} tipo_num |
         {resposta} tipo_bool |
         {nada} tipo_nada;
+
+    pva_prod =
+        {completo} para_voce_arranjar |
+        {parcial} voce_arranjar;
+
+    o_valor_prod =
+        {padrao} o_valor_de |
+        {resultado} o_resultado_de;
 
     parametros = 
         {unico} param_geral |
@@ -212,7 +222,10 @@ Abstract Syntax Tree
     
     programa = {lista} dec_funcao+;
     
-    dec_funcao = [marcador]:marcador_inicio? a_funcao id arruma tipo [p1]:ponto se_cond parametros [v1]:virgula para_voce_arranjar [v2]:virgula o_valor_de exp_retorno secao_constantes? ela_ira_te_retornar [p2]:ponto;
+    dec_funcao = [marcador]:marcador_inicio? a_funcao id arruma tipo [p1]:ponto se_cond [pe]:para_ela? parametros [v1]:virgula? [conector]:pva_prod [v2]:virgula [conector_valor]:o_valor_prod exp_retorno secao_constantes? ela_ira_te_retornar [p2]:ponto;
+    
+    pva_prod = {completo} para_voce_arranjar | {parcial} voce_arranjar;
+    o_valor_prod = {padrao} o_valor_de | {resultado} o_resultado_de;
     
     tipo = {numero} tipo_num | {resposta} tipo_bool | {nada} tipo_nada;
     parametros = 

@@ -1,0 +1,17 @@
+{
+  Arquivo: teste_simples.cmu
+  Testando soma simples e condicional
+}
+
+A funcao Soma arruma um numero.
+Se um numero A e um numero B,
+para voce arranjar, o valor de
+  A + B
+ela ira te retornar.
+
+Com sua licenca, por aqui vamos comecar!
+A funcao Principal arruma um numero.
+Se um nada,
+para voce arranjar, o valor de
+  Soma[ 10 | 20 ]
+ela ira te retornar.

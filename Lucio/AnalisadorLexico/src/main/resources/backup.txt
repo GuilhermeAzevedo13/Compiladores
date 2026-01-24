@@ -1,0 +1,378 @@
+Package cmu;
+
+Helpers
+
+    digito = ['0' .. '9'];
+    maiuscula = ['A' .. 'Z'];
+    minuscula = ['a' .. 'z'];
+    underscore = '_';
+    espaco = ' ';
+    rc = 13;
+    nl = 10;
+
+    qualquer = [0 .. 124];
+    qualquer_um = [126 .. 255];
+    any = [0 .. 9];
+    anyone = [11 .. 255];
+
+Tokens
+
+    com = 'Com';
+    sua = 'sua';
+    licenca = 'licenca';
+    virgula = ',';
+    por = 'por';
+    aqui = 'aqui';
+    vamos = 'vamos';
+    comecar = 'comecar';
+    exclamacao = '!';
+    se_condicional = 'Se';
+    se = 'se';
+    senao = 'senao';
+    entao = 'entao';
+    uma = 'uma';
+    condicao = 'condicao';
+    assim = 'assim';
+    ja = 'ja';
+    ia = 'ia';
+    esquecendo = 'esquecendo';
+    ponto = '.';
+    tres_pontos = '...';
+    preste = 'preste';
+    atencao = 'atencao';
+    favor = 'favor';
+    dois_pontos = ':';
+    diz = 'diz';
+    ser = 'ser';
+    que = 'que';
+    tem = 'tem';
+    como = 'como';
+    valor = 'valor';
+    um = 'um';
+    funcao = 'funcao';
+    arruma = 'arruma';
+    em = 'em';
+    troca = 'troca';
+    de = 'de';
+    a_grande = 'A';
+    para = 'para';
+    ela = 'ela';
+    voce = 'voce';
+    arranjar = 'arranjar';
+    o = 'o';
+    ira = 'ira';
+    te = 'te';
+    retornar = 'retornar';
+    seno = 'seno';
+    cosseno = 'cosseno';
+    tangente = 'tangente';
+    logaritmo = 'logaritmo';
+    potencia = 'potencia';
+    sim = 'sim';
+    nao = 'nao';
+
+    operador_aritmetico_soma = '+';
+    operador_aritmetico_multiplicacao = '*';
+    operador_aritmetico_subtracao = '-';
+    operador_aritmetico_divisao = '/';
+    operador_aritmetico_modulo = '%';
+    separador = '|';
+    operador_relacional_maior_igual = '>=';
+    operador_relacional_menor_igual = '<=';
+    operador_relacional_maior_que = '>';
+    operador_relacional_menor_que = '<';
+    operador_relacional_igual = '=';
+    e = 'e';
+    ou = 'ou';
+
+    numero_real = digito+ ',' digito+;
+    numero_inteiro = digito+;
+    nada = 'nada';
+    num = 'numero';
+    resposta = 'resposta';
+    par_esq = '(';
+    par_dir = ')';
+    colch_esq = '[';
+    colch_dir = ']';
+
+    id = maiuscula (maiuscula | minuscula | underscore)*;
+
+    comments_bloco = '{' (qualquer | qualquer_um)* '}';
+    comments_linha = '#' (any | anyone)* (nl | rc);
+    vazio = (espaco | rc | nl)+;
+
+Ignored Tokens
+    vazio,
+    comments_bloco,
+    comments_linha;
+
+Productions
+    programa = {lista} lista_funcoes |{vazio} ;
+
+    lista_funcoes =
+        {unica} dec_funcao |
+        {multiplas} lista_funcoes dec_funcao;
+
+    dec_funcao =
+        {unico} dec |
+        {duplo} marcador_entrada dec |
+        {duplo2} dec secao_constantes |
+        {completo} marcador_entrada dec secao_constantes;
+
+    dec = {func} a_grande funcao id arruma tipo [p1]:ponto se_condicional [v1]:virgula para [e1]:ela [v2]:virgula parametros voce arranjar [v3]:virgula o valor de exp_retorno [e2]:ela ira te retornar [p2]:ponto;
+
+    exp_retorno =
+        {exp} exp |
+        {ternario} condicao_ternaria;
+
+    marcador_entrada = {marcador_entrada} com sua licenca virgula por aqui vamos comecar exclamacao;
+
+    secao_constantes = {constantes} ja ia esquecendo tres_pontos preste atencao virgula por favor dois_pontos dec_constantes ponto;
+
+    dec_constantes =
+        {simples} dec_constante |
+        {composta} [d1]:dec_constante dec_constante_lista e [d2]:dec_constante;
+
+    dec_constante_lista = {listaconstante} dec_constante_aux |
+         {vazio} ;
+
+    dec_constante_aux = {simples} virgula dec_constante |
+          {recursivo} dec_constante_aux virgula dec_constante;
+
+    dec_constante = {decconstante} id diz ser tipo que tem exp como valor;
+
+    tipo =
+        {tipo_numero} um num |
+        {tipo_resposta} uma resposta |
+        {tipo_nada} um nada;
+
+    parametros =
+        {empty} um nada |
+        {parametro} parametro |
+        {parametro_completo} [p1]:parametro parametro_lista e [p2]:parametro;
+
+    parametro_lista = {lista} parametro_lista_aux | {vazio} ;
+
+    parametro_lista_aux = {simples} virgula parametro |
+        {recursivo} parametro_lista_aux virgula parametro;
+
+    parametro =
+        {tipo_id} tipo id |
+        {apenas_assinatura} assinatura;
+
+    assinatura = {assinatura} uma funcao id par_esq que arruma tipo em troca de parametros_assinatura par_dir;
+
+    parametros_assinatura =
+        {empty2} um nada |
+        {parametro_assinatura} parametro_assinatura |
+        {parametro_assinatura_completo} [p1]:parametro_assinatura pa_lista e [p2]:parametro_assinatura;
+
+    pa_lista = {lista} parametro_assinatura_aux |{vazio} ;
+
+    parametro_assinatura_aux = {simples} virgula parametro_assinatura |
+              {recursivo} parametro_assinatura_aux virgula parametro_assinatura;
+
+    parametro_assinatura =
+        {tipo} tipo |
+        {ass} assinatura;
+
+    chamada = {chamada} id colch_esq lista_exp colch_dir;
+
+    lista_exp =
+        {simples} exp |
+        {composto} exp lista_exp_aux |
+        {vazio} ;
+
+    lista_exp_aux = {composto} lista_exp_aux separador exp |
+        {simples} separador exp;
+
+    condicao_ternaria = {condicao} uma condicao assim dois_pontos se_ternario;
+
+    se_ternario = {ternario} se par_esq [e1]:exp par_dir entao [e2]:exp senao [e3]:exp;
+
+    exp =
+        {exp} exp_e |
+        {ou} exp ou exp_e;
+
+    exp_e =
+        {relacional} relacional |
+        {and} exp_e e relacional;
+
+    relacional =
+        {aritmetico} aritmetico |
+        {igual} relacional operador_relacional_igual aritmetico |
+        {menor} relacional operador_relacional_menor_que aritmetico |
+        {maior} relacional operador_relacional_maior_que aritmetico |
+        {menoreigual} relacional operador_relacional_menor_igual aritmetico |
+        {maioreigual} relacional operador_relacional_maior_igual aritmetico;
+
+    aritmetico =
+        {fator} fator |
+        {sum} aritmetico operador_aritmetico_soma fator |
+        {sub} aritmetico operador_aritmetico_subtracao fator;
+
+    fator =
+        {unario} unario |
+        {mult} fator operador_aritmetico_multiplicacao unario |
+        {div} fator operador_aritmetico_divisao unario |
+        {mod} fator operador_aritmetico_modulo unario;
+
+    // --- CORRECAO DO CONFLITO SHIFT/REDUCE ---
+    // Removemos o 'nao' do termo e tratamos tudo aqui no unario com uma "cauda" (tail).
+
+    unario =
+        {termo} termo
+            {-> New unario.termo(termo)} |
+        {negativo} operador_aritmetico_subtracao unario
+            {-> New unario.negativo(operador_aritmetico_subtracao, unario)} |
+        {nao} nao unario_tail
+            {-> unario_tail.unario};
+
+    // Essa regra auxiliar decide:
+    // Se o que vem depois do 'nao' for outro unario (ex: nao -5), eh Operador.
+    // Se nao tiver nada (vazio), eh Valor (o 'nao' era Falso).
+    unario_tail {-> unario} =
+        {operador} unario
+            {-> New unario.nao(unario)} |
+        {valor}
+            {-> New unario.termo(New termo.nao())};
+
+    // -----------------------------------------
+
+    termo =
+        {inteiro} numero_inteiro |
+        {real} numero_real |
+        {sim} sim |
+        // {nao} nao |  <-- REMOVIDO DAQUI (agora eh tratado em unario_tail)
+        {id} id |
+        {chamada} chamada |
+        {ternario} se_ternario |
+        {par} par_esq exp par_dir;
+
+
+Abstract Syntax Tree
+
+    programa = {lista} lista_funcoes |{vazio} ;
+
+    lista_funcoes =
+        {unica} dec_funcao |
+        {multiplas} lista_funcoes dec_funcao;
+
+    dec_funcao =
+        {unico} dec |
+        {duplo} marcador_entrada dec |
+        {duplo2} dec secao_constantes |
+        {completo} marcador_entrada dec secao_constantes;
+
+    dec = {func} a_grande funcao id arruma tipo [p1]:ponto se_condicional [v1]:virgula para [e1]:ela [v2]:virgula parametros voce arranjar [v3]:virgula o valor de exp_retorno [e2]:ela ira te retornar [p2]:ponto;
+
+    exp_retorno =
+        {exp} exp |
+        {ternario} condicao_ternaria;
+
+    marcador_entrada = {marcador_entrada} com sua licenca virgula por aqui vamos comecar exclamacao;
+
+    secao_constantes = {constantes} ja ia esquecendo tres_pontos preste atencao virgula por favor dois_pontos dec_constantes ponto;
+
+    dec_constantes =
+        {simples} dec_constante |
+        {composta} [d1]:dec_constante dec_constante_lista e [d2]:dec_constante;
+
+    dec_constante_lista = {listaconstante} dec_constante_aux |
+         {vazio} ;
+
+    dec_constante_aux = {simples} virgula dec_constante |
+          {recursivo} dec_constante_aux virgula dec_constante;
+
+    dec_constante = {decconstante} id diz ser tipo que tem exp como valor;
+
+    tipo =
+        {tipo_numero} um num |
+        {tipo_resposta} uma resposta |
+        {tipo_nada} um nada;
+
+    parametros =
+        {empty} um nada |
+        {parametro} parametro |
+        {parametro_completo} [p1]:parametro parametro_lista e [p2]:parametro;
+
+    parametro_lista = {lista} parametro_lista_aux | {vazio} ;
+
+    parametro_lista_aux = {simples} virgula parametro |
+        {recursivo} parametro_lista_aux virgula parametro;
+
+    parametro =
+        {tipo_id} tipo id |
+        {apenas_assinatura} assinatura;
+
+    assinatura = {assinatura} uma funcao id par_esq que arruma tipo em troca de parametros_assinatura par_dir;
+
+    parametros_assinatura =
+        {empty2} um nada |
+        {parametro_assinatura} parametro_assinatura |
+        {parametro_assinatura_completo} [p1]:parametro_assinatura pa_lista e [p2]:parametro_assinatura;
+
+    pa_lista = {lista} parametro_assinatura_aux |{vazio} ;
+
+    parametro_assinatura_aux = {simples} virgula parametro_assinatura |
+              {recursivo} parametro_assinatura_aux virgula parametro_assinatura;
+
+    parametro_assinatura =
+        {tipo} tipo |
+        {ass} assinatura;
+
+    chamada = {chamada} id colch_esq lista_exp colch_dir;
+
+    lista_exp =
+        {simples} exp |
+        {composto} exp lista_exp_aux |
+        {vazio} ;
+
+    lista_exp_aux = {composto} lista_exp_aux separador exp |
+        {simples} separador exp;
+
+    condicao_ternaria = {condicao} uma condicao assim dois_pontos se_ternario;
+
+    se_ternario = {ternario} se par_esq [e1]:exp par_dir entao [e2]:exp senao [e3]:exp;
+
+    exp =
+        {exp} exp_e |
+        {ou} exp ou exp_e;
+
+    exp_e =
+        {relacional} relacional |
+        {and} exp_e e relacional;
+
+    relacional =
+        {aritmetico} aritmetico |
+        {igual} relacional operador_relacional_igual aritmetico |
+        {menor} relacional operador_relacional_menor_que aritmetico |
+        {maior} relacional operador_relacional_maior_que aritmetico |
+        {menoreigual} relacional operador_relacional_menor_igual aritmetico |
+        {maioreigual} relacional operador_relacional_maior_igual aritmetico;
+
+    aritmetico =
+        {fator} fator |
+        {sum} aritmetico operador_aritmetico_soma fator |
+        {sub} aritmetico operador_aritmetico_subtracao fator;
+
+    fator =
+        {unario} unario |
+        {mult} fator operador_aritmetico_multiplicacao unario |
+        {div} fator operador_aritmetico_divisao unario |
+        {mod} fator operador_aritmetico_modulo unario;
+
+    unario =
+        {termo} termo |
+        {negativo} operador_aritmetico_subtracao unario |
+        {nao} unario; // Token removido daqui para facilitar, usamos apenas a estrutura
+
+    termo =
+        {inteiro} numero_inteiro |
+        {real} numero_real |
+        {sim} sim |
+        {nao} | // Token removido daqui, o tipo do no basta
+        {id} id |
+        {chamada} chamada |
+        {ternario} se_ternario |
+        {par} par_esq exp par_dir;

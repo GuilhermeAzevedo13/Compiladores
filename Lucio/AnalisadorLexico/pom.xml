@@ -62,7 +62,7 @@
                                 <mkdir dir="${project.build.directory}/generated-sources/sablecc"/>
                                 <java jar="${project.basedir}/lib/sablecc.jar"
                                       fork="true"
-                                      failonerror="false">
+                                      failonerror="true">
 
                                     <arg value="-d"/>
                                     <arg value="${project.build.directory}/generated-sources/sablecc"/>

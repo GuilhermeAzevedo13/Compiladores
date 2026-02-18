@@ -1,72 +1,62 @@
 package cmu;
 
-import cmu.lexer.Lexer;
-import cmu.parser.Parser;
-import cmu.node.*;
-import cmu.analysis.DepthFirstAdapter;
-import java.io.FileReader;
-import java.io.PushbackReader;
-import java.io.File;
+import cordelmaisum.lexer.Lexer;
+import cordelmaisum.parser.Parser;
+import cordelmaisum.node.*;
+import cordelmaisum.analysis.DepthFirstAdapter;
+import cordelmaisum.node.Token;
+import java.io.*;
 
 public class Main {
 
     public static void main(String[] args) {
-        String arquivo = args.length > 0 ? args[0] : "triangulo_existencia.cmu";
+        String arquivo = args.length > 0 ? args[0] : "fatorial.cmu";
 
-        System.out.println("Working Directory = " + System.getProperty("user.dir"));
         File f = new File(arquivo);
         if (!f.exists()) {
             System.err.println("Arquivo nao encontrado: " + f.getAbsolutePath());
             return;
         }
 
-        System.out.println(">>> Iniciando Analise do arquivo: " + arquivo);
-
         try {
             Lexer lexer = new Lexer(new PushbackReader(new FileReader(arquivo), 1024));
             Parser parser = new Parser(lexer);
             Start tree = parser.parse();
 
-            System.out.println("\n=== SUCESSO: O codigo compilou! ===");
-            System.out.println("Imprimindo Arvore Sintatica...\n");
-
             tree.apply(new ImpressoraArvore());
 
+            System.out.println("\n>>> GERANDO CODIGO C AGORA..."); // Mensagem de debug
+
+            GeradorC gerador = new GeradorC();
+            tree.apply(gerador);
+
+            String nomeSaida = arquivo.replace(".cmu", ".c");
+            if (!nomeSaida.endsWith(".c")) nomeSaida += ".c";
+
+            PrintWriter writer = new PrintWriter(nomeSaida);
+            writer.print(gerador.getCodigo());
+            writer.close(); // Importante fechar para salvar!
+
+            System.out.println("SUCESSO! Arquivo gerado: " + new File(nomeSaida).getAbsolutePath());
+
         } catch (Exception e) {
-            System.err.println("=== ERRO: Falha na analise ===");
             e.printStackTrace();
         }
     }
 
     static class ImpressoraArvore extends DepthFirstAdapter {
         private int nivel = 0;
-
         private void print(String texto) {
-            for (int i = 0; i < nivel; i++)
-                System.out.print("  |");
+            for (int i = 0; i < nivel; i++) System.out.print("  |");
             System.out.println("- " + texto);
         }
-
-        @Override
         public void defaultIn(Node node) {
-            String nomeNo = node.getClass().getSimpleName();
-            nomeNo = nomeNo.replaceFirst("^(A|P|T)", "");
-            print(nomeNo);
-            nivel++;
+            String nome = node.getClass().getSimpleName().replaceFirst("^(A|P|T)", "");
+            print(nome); nivel++;
         }
-
-        @Override
-        public void defaultOut(Node node) {
-            nivel--;
-        }
-
-        @Override
+        public void defaultOut(Node node) { nivel--; }
         public void defaultCase(Node node) {
-            if (node instanceof Token) {
-                String valor = ((Token) node).getText();
-                valor = valor.replace("\n", "\\n").replace("\r", "");
-                print("'" + valor + "'");
-            }
+            if (node instanceof Token) print("'" + ((Token) node).getText().replace("\n", "\\n") + "'");
         }
     }
 }
